@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @SpringBootApplication
-//@EnableWebSecurity(debug = true)
 @EnableConfigurationProperties
 @EnableMethodSecurity
 public class AAAApplication {
