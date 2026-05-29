@@ -33,10 +33,9 @@ public class RoleServiceImp implements RoleService {
 
     @Override
     public Role getById(Long id) {
-        Optional<Role> optional = repository.findById(id);
-        if(optional.isPresent())
-            return optional.get();
-        else throw new NotFoundException("role not found");
+        return repository.findById(id).orElseThrow(
+                () -> new NotFoundException("role not found")
+        );
     }
 
     @Override
@@ -51,12 +50,9 @@ public class RoleServiceImp implements RoleService {
         if(repository.existsByName(role.getName()))
             throw new DuplicateNameException("this role name is already exist");
 
-
-        Optional<Role> Optional = repository.findById(id);
-        Role oldRole = null;
-        if(Optional.isPresent())
-            oldRole = Optional.get();
-        else throw new NotFoundException("failed to find Role by id:" + id);
+        Role oldRole = repository.findById(id).orElseThrow(
+                () -> new NotFoundException("failed to find Role by id:" + id)
+        );
 
         mapper.updateRoleFromDto(role,oldRole);
         return repository.save(oldRole);
@@ -74,9 +70,8 @@ public class RoleServiceImp implements RoleService {
 
     @Override
     public Role getByName(String name) {
-        Optional<Role> optional = repository.findByName(name);
-        if(optional.isPresent())
-            return optional.get();
-        else throw new NotFoundException("role not found");
+        return repository.findByName(name).orElseThrow(
+                () -> new NotFoundException("role not found")
+        );
     }
 }
