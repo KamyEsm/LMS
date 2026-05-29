@@ -11,4 +11,5 @@ public interface PermissionService {
     void deleteById(Long id);
     Permission UpdateById(Long id , Permission permission);
     List<Permission> getAll(int page , int count);
+    Permission getByName(String permissionName);
 }

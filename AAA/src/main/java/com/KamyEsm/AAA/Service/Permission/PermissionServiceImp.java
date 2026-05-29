@@ -33,10 +33,9 @@ public class PermissionServiceImp implements PermissionService {
 
     @Override
     public Permission getById(Long id) {
-        Optional<Permission> optional = repository.findById(id);
-        if(optional.isPresent())
-            return optional.get();
-        else throw new NotFoundException("Permission not found");
+        return repository.findById(id).orElseThrow(
+                () -> new NotFoundException("Permission not found")
+        );
     }
 
     @Override
@@ -52,11 +51,9 @@ public class PermissionServiceImp implements PermissionService {
             throw new DuplicateNameException("this Permission name is already exist");
 
 
-        Optional<Permission> Optional = repository.findById(id);
-        Permission oldPermission = null;
-        if(Optional.isPresent())
-            oldPermission = Optional.get();
-        else throw new NotFoundException("failed to find Permission by id:" + id);
+        Permission oldPermission = repository.findById(id).orElseThrow(
+                () -> new NotFoundException("failed to find Permission by id:" + id)
+        );
 
         mapper.updatePermissionFromDto(permission,oldPermission);
         return repository.save(oldPermission);
@@ -70,5 +67,12 @@ public class PermissionServiceImp implements PermissionService {
 
         Pageable pageable = PageRequest.of(page, count, Sort.by(Sort.Direction.DESC, "id"));
         return repository.findAll(pageable).getContent();
+    }
+
+    @Override
+    public Permission getByName(String permissionName) {
+        return repository.findByName(permissionName).orElseThrow(
+                () -> new NotFoundException("failed to find Permission by permission name:" + permissionName)
+        );
     }
 }
