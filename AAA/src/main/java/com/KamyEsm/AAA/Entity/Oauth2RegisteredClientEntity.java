@@ -79,12 +79,6 @@ public class Oauth2RegisteredClientEntity {
     @Column(name = "reuse_refresh_tokens")
     private Boolean reuseRefreshTokens; // old refresh token is valid?
 
-//    @Column(name = "client_settings_json", columnDefinition = "jsonb")
-//    private String clientSettingsJson;
-//
-//    @Column(name = "token_settings_json", columnDefinition = "jsonb")
-//    private String tokenSettingsJson;
-
     // --- Audit ---
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
