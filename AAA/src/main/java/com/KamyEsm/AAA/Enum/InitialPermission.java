@@ -11,6 +11,9 @@ public enum InitialPermission {
     UPDATE_ROLE,
     DELETE_ROLE,
     READ_ROLE,
+    //role management
+    ADD_ROLE_MANAGEMENT,
+    DELETE_ROLE_MANAGEMENT,
     //permission
     CREATE_PERMISSION,
     UPDATE_PERMISSION,
