@@ -43,19 +43,17 @@ public class UserServiceImp implements UserService{
 
     @Override
     public MyUser getById(Long id) {
-        Optional<MyUser> userOptional = repository.findById(id);
-        if(userOptional.isPresent())
-            return userOptional.get();
-        else throw new NotFoundException("failed to find user by id:" + id);
+        return repository.findById(id).orElseThrow(
+                () -> new NotFoundException("failed to find user by id:" + id)
+        );
     }
 
-//    @Override
-//    public MyUser getByUserName(String username) {
-//        Optional<MyUser> userOptional = repository.findByUsername(username);
-//        if(userOptional.isPresent())
-//            return userOptional.get();
-//        else throw new UserNotFoundException("failed to find user by username:" + username);
-//    }
+    @Override
+    public MyUser getByUserName(String username) {
+        return repository.findByUsername(username).orElseThrow(
+                () -> new NotFoundException("failed to find user by username:" + username)
+        );
+    }
 
     @Override
     public void deleteById(Long id) {
@@ -71,11 +69,9 @@ public class UserServiceImp implements UserService{
             throw new DuplicateNameException("this username is already exist");
 
 
-        Optional<MyUser> userOptional = repository.findById(id);
-        MyUser oldUser = null;
-        if(userOptional.isPresent())
-            oldUser = userOptional.get();
-        else throw new NotFoundException("failed to find user by id:" + id);
+        MyUser oldUser = repository.findById(id).orElseThrow(
+                () -> new NotFoundException("failed to find user by id:" + id)
+        );
 
         if(!user.getPassword().isBlank() && !encoder.matches(user.getPassword() , oldUser.getPassword())){
             if(passwordChecker.check(user.getPassword()).isCompromised())
