@@ -5,8 +5,12 @@ import com.KamyEsm.AAA.Entity.Permission;
 import org.mapstruct.*;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
+import java.time.Duration;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,6 +28,13 @@ public interface RegisteredClientMapper {
                 .clientSecret(entity.getClientSecret())
                 .clientSecretExpiresAt(entity.getClientSecretExpiresAt())
                 .clientName(entity.getClientName());
+
+        TokenSettings tokenSettings = TokenSettings.builder()
+                .accessTokenTimeToLive(Duration.ofSeconds(entity.getAccessTokenTimeToLiveSeconds()))
+                .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
+                .idTokenSignatureAlgorithm(SignatureAlgorithm.RS256).build();
+
+        builder.tokenSettings(tokenSettings);
 
         if (entity.getClientAuthenticationMethods() != null) {
             entity.getClientAuthenticationMethods().forEach(method ->

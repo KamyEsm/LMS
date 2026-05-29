@@ -47,7 +47,7 @@ public class ClientInitializer implements CommandLineRunner {
 
             client.setScopes(permissions);
 
-            // client.setAccessTokenTimeToLiveSeconds(3600);
+             client.setAccessTokenTimeToLiveSeconds(3600L);
 
             repository.save(client);
             System.out.println(">>> Test client seeded successfully: " + clientId);
