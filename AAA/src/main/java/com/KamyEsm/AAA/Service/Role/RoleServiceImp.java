@@ -27,7 +27,7 @@ public class RoleServiceImp implements RoleService {
         if(newRole == null) return null;
         if(repository.existsByName(newRole.getName()))
             throw new DuplicateNameException("role name is already exist");
-        if(newRole.getName().startsWith("ROLE_")) newRole.setName("ROLE_" + newRole.getName());
+        if(!newRole.getName().startsWith("ROLE_")) newRole.setName("ROLE_" + newRole.getName());
         return repository.save(newRole);
     }
 
