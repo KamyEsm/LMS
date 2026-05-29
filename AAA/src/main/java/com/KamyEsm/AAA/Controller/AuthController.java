@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final JWTGenerateService jwtService;
+//    private final JWTGenerateService jwtService;
     private final RegisterService registerService;
     private final UserMapper userMapper;
 
