@@ -89,6 +89,8 @@ public interface RegisteredClientMapper {
             entity.setAuthorizationGrantTypes(grants);
         }
 
+        entity.setAccessTokenTimeToLiveSeconds(domain.getTokenSettings().getAccessTokenTimeToLive().toSeconds());
+
 
         // entity.setClientSettingsJson(serialize(domain.getClientSettings()));
         // entity.setTokenSettingsJson(serialize(domain.getTokenSettings()));
