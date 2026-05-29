@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex) {
-        return new ResponseEntity<>(new ErrorResponse(404 , "Failed to find" , ex.getMessage() , LocalDateTime.now()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new ErrorResponse(404 , "resource not found" , ex.getMessage() , LocalDateTime.now()), HttpStatus.NOT_FOUND);
     }
 
 

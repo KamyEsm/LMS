@@ -50,7 +50,7 @@ public class Initializer implements CommandLineRunner {
             }
 
             for (InitialPermission p : InitialPermission.values()){
-                permissionSet.add(new Permission(null , p.name() , new HashSet<>() , null));
+                permissionSet.add(new Permission(null , p.name() , new HashSet<>() , null , null));
             }
 
             Role adminRole = new Role(null , InitialRole.ROLE_MANAGER.name() , null , new HashSet<>() , permissionSet);

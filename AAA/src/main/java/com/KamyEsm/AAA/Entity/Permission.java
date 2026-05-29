@@ -18,13 +18,14 @@ public class Permission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonValue
     @Column(unique = true)
     private String name;
 
     @ManyToMany(mappedBy = "permissions")
-    @JsonIgnore
     private Set<Role> roles;
+
+    @ManyToMany(mappedBy = "scopes")
+    private Set<Oauth2RegisteredClientEntity> clients;
 
     private String description;
 }
