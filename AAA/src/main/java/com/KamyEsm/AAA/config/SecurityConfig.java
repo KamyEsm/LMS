@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -100,83 +101,57 @@ public class SecurityConfig {
     }
 
 
-    @Bean
-    public JWKSource<SecurityContext> jwkSource() {
-        KeyPair keyPair = generateRsaKey();
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        RSAKey rsaKey = new RSAKey.Builder(publicKey)
-                .privateKey(privateKey)
-                .keyID(UUID.randomUUID().toString())
-                .build();
-        JWKSet jwkSet = new JWKSet(rsaKey);
-        return new ImmutableJWKSet<>(jwkSet);
-    }
-
-    private static KeyPair generateRsaKey() {
-        KeyPair keyPair;
-        try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
-            keyPair = keyPairGenerator.generateKeyPair();
-        }
-        catch (Exception ex) {
-            throw new IllegalStateException(ex);
-        }
-        return keyPair;
-    }
-
 
     //production
-//    @Value("${app.security.jwt.private-key}")
-//    private String privateKeyPem;
-//
-//    @Value("${app.security.jwt.public-key}")
-//    private String publicKeyPem;
-//
-//    @Value("${app.security.jwt.key-id}")
-//    private String keyId;
-//
-//    @Bean
-//    public JWKSource<SecurityContext> jwkSource() {
-//        try {
-//            RSAPublicKey publicKey = getPublicKey();
-//            RSAPrivateKey privateKey = getPrivateKey();
-//
-//            RSAKey rsaKey = new RSAKey.Builder(publicKey)
-//                    .privateKey(privateKey)
-//                    .keyID(keyId)
-//                    .build();
-//
-//            return new ImmutableJWKSet<>(new JWKSet(rsaKey));
-//        } catch (Exception e) {
-//            throw new IllegalStateException("Failed to load JWT cryptographic keys", e);
-//        }
-//    }
-//
-//    private RSAPrivateKey getPrivateKey() throws Exception {
-//        String privateKeyPEM = privateKeyPem
-//                .replace("-----BEGIN PRIVATE KEY-----", "")
-//                .replaceAll("\\s", "")
-//                .replace("-----END PRIVATE KEY-----", "");
-//
-//        byte[] encoded = Base64.getDecoder().decode(privateKeyPEM);
-//        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-//        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
-//        return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
-//    }
-//
-//    private RSAPublicKey getPublicKey() throws Exception {
-//        String publicKeyPEM = publicKeyPem
-//                .replace("-----BEGIN PUBLIC KEY-----", "")
-//                .replaceAll("\\s", "")
-//                .replace("-----END PUBLIC KEY-----", "");
-//
-//        byte[] encoded = Base64.getDecoder().decode(publicKeyPEM);
-//        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-//        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
-//        return (RSAPublicKey) keyFactory.generatePublic(keySpec);
-//    }
+    @Value("${app.security.jwt.private-key}")
+    private String privateKeyPem;
+
+    @Value("${app.security.jwt.public-key}")
+    private String publicKeyPem;
+
+    @Value("${app.security.jwt.key-id}")
+    private String keyId;
+
+    @Bean
+    public JWKSource<SecurityContext> jwkSource() {
+        try {
+            RSAPublicKey publicKey = getPublicKey();
+            RSAPrivateKey privateKey = getPrivateKey();
+
+            RSAKey rsaKey = new RSAKey.Builder(publicKey)
+                    .privateKey(privateKey)
+                    .keyID(keyId)
+                    .build();
+
+            return new ImmutableJWKSet<>(new JWKSet(rsaKey));
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to load JWT cryptographic keys", e);
+        }
+    }
+
+    private RSAPrivateKey getPrivateKey() throws Exception {
+        String privateKeyPEM = privateKeyPem
+                .replace("-----BEGIN PRIVATE KEY-----", "")
+                .replaceAll("\\s", "")
+                .replace("-----END PRIVATE KEY-----", "");
+
+        byte[] encoded = Base64.getDecoder().decode(privateKeyPEM);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
+        return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
+    }
+
+    private RSAPublicKey getPublicKey() throws Exception {
+        String publicKeyPEM = publicKeyPem
+                .replace("-----BEGIN PUBLIC KEY-----", "")
+                .replaceAll("\\s", "")
+                .replace("-----END PUBLIC KEY-----", "");
+
+        byte[] encoded = Base64.getDecoder().decode(publicKeyPEM);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encoded);
+        return (RSAPublicKey) keyFactory.generatePublic(keySpec);
+    }
 
 
 
