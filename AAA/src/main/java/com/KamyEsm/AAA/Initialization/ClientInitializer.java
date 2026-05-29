@@ -5,6 +5,7 @@ import com.KamyEsm.AAA.Entity.Permission;
 import com.KamyEsm.AAA.Enum.InitialPermission;
 import com.KamyEsm.AAA.Repository.Oauth2RegisteredClientRepository;
 import com.KamyEsm.AAA.Repository.PermissionsRepository;
+import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -17,13 +18,14 @@ import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-public class ClientSeeder implements CommandLineRunner {
+public class ClientInitializer implements CommandLineRunner {
 
     private final Oauth2RegisteredClientRepository repository;
     private final PasswordEncoder passwordEncoder;
     private final PermissionsRepository permissionsRepository;
 
     @Override
+    @Transactional
     public void run(String @NonNull ... args) throws Exception {
         String clientId = "inventory-service";
 
