@@ -7,6 +7,7 @@ import com.KamyEsm.AAA.Mapper.RoleMapper;
 import com.KamyEsm.AAA.Mapper.UserMapper;
 import com.KamyEsm.AAA.Repository.RoleRepository;
 import com.KamyEsm.AAA.Repository.UserRepository;
+import com.KamyEsm.AAA.Service.User.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,14 +20,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RoleManagementServiceImp implements RoleManagementService {
 
-    private final RoleRepository roleRepository;
-    private final UserRepository userRepository;
+    private final RoleService roleService;
+    private final UserService userService;
     private final UserMapper userMapper;
 
     @Override
     public Set<String> addRoleToUser(String roleName , String username) {
-        MyUser user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("user not found"));
-        Role role = roleRepository.findByName(roleName).orElseThrow(() -> new NotFoundException("role not found"));
+        MyUser user = userService.getByUserName(username);
+        Role role = roleService.getByName(roleName);
 
 
         Set<Role> roleSet = user.getRoles();
@@ -43,7 +44,7 @@ public class RoleManagementServiceImp implements RoleManagementService {
 
     @Override
     public Set<String> disableRoleFromUser(String roleName , String username) {
-        MyUser user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("user not found"));
+        MyUser user = userService.getByUserName(username);
         Set<Role> roleSet = user.getRoles().stream().filter(c -> !Objects.equals(c.getName(), roleName)).collect(Collectors.toSet());
 
         Set<String> rStrings = new HashSet<>();
