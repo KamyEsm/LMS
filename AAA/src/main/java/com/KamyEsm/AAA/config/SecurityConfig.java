@@ -1,5 +1,6 @@
 package com.KamyEsm.AAA.config;
 
+import com.KamyEsm.AAA.Filter.JWTTokenValidatorFilter;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -44,7 +45,7 @@ import java.util.UUID;
 @Profile("dev")
 @RequiredArgsConstructor
 public class SecurityConfig {
-//    private final JWTTokenValidatorFilter;
+    private final JWTTokenValidatorFilter jwtTokenValidatorFilter;
 
 
 
@@ -77,8 +78,7 @@ public class SecurityConfig {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
                 OAuth2AuthorizationServerConfigurer.authorizationServer();
 
-        http
-                .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+        http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .with(authorizationServerConfigurer, (authorizationServer) ->
                         authorizationServer
                                 .oidc(Customizer.withDefaults())	// Enable OpenID Connect 1.0
@@ -95,6 +95,20 @@ public class SecurityConfig {
                                 new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
                         )
                 );
+
+        return http.build();
+    }
+
+
+    @Bean
+    @Order(2)
+    public SecurityFilterChain setSecurityConfig(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(s -> s.anyRequest().authenticated())
+                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtTokenValidatorFilter , UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -124,6 +138,16 @@ public class SecurityConfig {
             throw new IllegalStateException(ex);
         }
         return keyPair;
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
+        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
+    }
+
+    @Bean
+    public AuthorizationServerSettings authorizationServerSettings() {
+        return AuthorizationServerSettings.builder().build();
     }
 
 
@@ -193,29 +217,5 @@ public class SecurityConfig {
 //        }
 //        return keyPair;
 //    }
-
-    @Bean
-    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
-        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
-    }
-
-    @Bean
-    public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().build();
-    }
-
-
-
-    @Bean
-    @Order(2)
-    public SecurityFilterChain setSecurityConfig(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(s -> s.anyRequest().authenticated())
-                .cors(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        return http.build();
-    }
 
 }
