@@ -10,18 +10,6 @@
 <body>
 <div class="container">
 
-  <div class="login-message"
-       th:if="${param.error}"
-       style="color:red">
-    Invalid username or password.
-  </div>
-
-  <div class="login-message"
-       th:if="${param.logout}"
-       style="color:green">
-    You have been logged out successfully.
-  </div>
-
   <form class="login" th:action="@{/login}" method="post">
     <h1 class="login-title">Login</h1>
     <p class="login-subtitle">Log in to your account to continue.</p>
@@ -58,6 +46,19 @@
     </div>
 
     <button class="login-button" type="submit">Login</button>
+
+
+    <div class="login-message"
+         th:if="${param.error}"
+         style="color:red">
+      Invalid username or password.
+    </div>
+
+    <div class="login-message"
+         th:if="${param.logout}"
+         style="color:green">
+      You have been logged out successfully.
+    </div>
 
     <div class="login-footer">
       Don’t have an account?
