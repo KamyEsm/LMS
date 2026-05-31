@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+
+  <!-- مسیر درست CSS در thymeleaf -->
+  <link rel="stylesheet" href="/css/loginpagestyle.css">
+</head>
+
+<body>
+<div class="container">
+  <form class="login" th:action="@{/login}" method="post">
+    <h1 class="login-title">login</h1>
+    <p class="login-subtitle">Log in to your account to continue.</p>
+
+    <!-- پیام خطا از Model (گزینه B: بدون redirect) -->
+    <div class="login-message"
+         th:if="${loginError}"
+         th:text="${errorMessage}"
+         style="color:red">
+    </div>
+
+    <input type="hidden"
+           th:if="${_csrf != null}"
+           th:name="${_csrf.parameterName}"
+           th:value="${_csrf.token}"/>
+
+    <div class="login-group">
+      <label class="login-label" for="username">username:</label>
+      <input class="login-field" id="username" type="text"
+             placeholder="Enter your username."
+             name="username"
+             autocomplete="username"
+             autofocus />
+    </div>
+
+    <div class="login-group">
+      <label class="login-label" for="password">password</label>
+      <input class="login-field" id="password" type="password"
+             placeholder="password"
+             name="password"
+             autocomplete="current-password"/>
+    </div>
+
+    <div class="login-row">
+      <label class="login-checkbox">
+        <input type="checkbox" name="remember-me"/>
+        <span>Remember me.</span>
+      </label>
+
+      <a href="#" class="login-link">Forgot your password?</a>
+    </div>
+
+    <button class="login-button" type="submit">login</button>
+
+    <div class="login-footer">
+      Dont have an account?
+      <a href="#" class="login-link"> register</a>
+    </div>
+  </form>
+</div>
+</body>
+</html>

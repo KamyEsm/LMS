@@ -98,4 +98,30 @@ public class Oauth2RegisteredClientEntity {
     void preUpdate() {
         updatedAt = Instant.now();
     }
+
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "oauth2_client_redirect_uri",
+            joinColumns = @JoinColumn(name = "oauth2_registered_client_id")
+    )
+    @Column(name = "redirect_uri", nullable = false, length = 500)
+    private Set<String> redirectUris = new HashSet<>();
+
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "oauth2_client_post_logout_redirect_uri",
+            joinColumns = @JoinColumn(name = "oauth2_registered_client_id")
+    )
+    @Column(name = "post_logout_redirect_uri", nullable = false, length = 500)
+    private Set<String> postLogoutRedirectUris = new HashSet<>();
+
+    @Column(name = "require_authorization_consent")
+    private Boolean requireAuthorizationConsent;
+
+    @Column(name = "require_proof_key")
+    private Boolean requireProofKey;
+
+
 }

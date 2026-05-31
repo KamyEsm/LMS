@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/AAA/AAA.iml" filepath="$PROJECT_DIR$/AAA/AAA.iml" />
       <module fileurl="file://$PROJECT_DIR$/FileManagementService/FileManagementService.iml" filepath="$PROJECT_DIR$/FileManagementService/FileManagementService.iml" />
       <module fileurl="file://$PROJECT_DIR$/NotificationService/NotificationService.iml" filepath="$PROJECT_DIR$/NotificationService/NotificationService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lms_frontend/lms_frontend.iml" filepath="$PROJECT_DIR$/lms_frontend/lms_frontend.iml" />
     </modules>
   </component>
 </project>

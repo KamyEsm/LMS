@@ -1,0 +1,38 @@
+:root {
+
+  max-width: 1280px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  --color-primary: #2563EB;
+  --color-primary-hover: #1D4ED8;
+  --color-secondary: #14B8A6;
+  --color-accent: #F59E0B;
+
+  --color-bg: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-border: #E2E8F0;
+
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #475569;
+  --color-muted: #94A3B8;
+
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #0EA5E9;
+
+
+
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+
+
+}
+

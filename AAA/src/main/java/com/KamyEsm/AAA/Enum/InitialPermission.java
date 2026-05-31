@@ -18,5 +18,9 @@ public enum InitialPermission {
     CREATE_PERMISSION,
     UPDATE_PERMISSION,
     DELETE_PERMISSION,
-    READ_PERMISSION
+    READ_PERMISSION,
+
+    //scopes
+    openid,
+    profile
 }

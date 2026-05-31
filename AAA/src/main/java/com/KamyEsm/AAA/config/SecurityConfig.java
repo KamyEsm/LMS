@@ -18,6 +18,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,9 +46,6 @@ import java.util.UUID;
 @Profile("dev")
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final JWTTokenValidatorFilter jwtTokenValidatorFilter;
-
-
 
     @Bean
     public CompromisedPasswordChecker compromisedPasswordChecker() {
@@ -64,13 +62,6 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-//    @Bean
-//    public FilterRegistrationBean<JWTTokenValidatorFilter> tenantFilterRegistration(JWTTokenValidatorFilter filter) {
-//        FilterRegistrationBean<JWTTokenValidatorFilter> registration = new FilterRegistrationBean<>(filter);
-//        registration.setEnabled(false);
-//        return registration;
-//    }
-
     @Bean
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http)
@@ -78,18 +69,17 @@ public class SecurityConfig {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
                 OAuth2AuthorizationServerConfigurer.authorizationServer();
 
-        http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-                .with(authorizationServerConfigurer, (authorizationServer) ->
-                        authorizationServer
-                                .oidc(Customizer.withDefaults())	// Enable OpenID Connect 1.0
+        http
+                .securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+                .with(authorizationServerConfigurer, authorizationServer ->
+                        authorizationServer.oidc(Customizer.withDefaults())
                 )
-                .authorizeHttpRequests((authorize) ->
-                        authorize
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests(authorize ->
+                        authorize.anyRequest().authenticated()
                 )
-                // Redirect to the login page when not authenticated from the
-                // authorization endpoint
-                .exceptionHandling((exceptions) -> exceptions
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exceptions -> exceptions
                         .defaultAuthenticationEntryPointFor(
                                 new LoginUrlAuthenticationEntryPoint("/login"),
                                 new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
@@ -99,16 +89,43 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     @Bean
     @Order(2)
-    public SecurityFilterChain setSecurityConfig(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(s -> s.anyRequest().authenticated())
-                .cors(AbstractHttpConfigurer::disable)
+    public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher("/api/**")
+                .authorizeHttpRequests(authorize -> authorize
+                        .anyRequest().authenticated()
+                )
                 .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(jwtTokenValidatorFilter , UsernamePasswordAuthenticationFilter.class);
+                .cors(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(3)
+    public SecurityFilterChain loginSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/loginpage.html",
+                                "/login",          // GET و POST
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin(AbstractHttpConfigurer::disable)   // خیلی مهم
+                .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
@@ -119,25 +136,24 @@ public class SecurityConfig {
         KeyPair keyPair = generateRsaKey();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+
         RSAKey rsaKey = new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)
                 .keyID(UUID.randomUUID().toString())
                 .build();
+
         JWKSet jwkSet = new JWKSet(rsaKey);
         return new ImmutableJWKSet<>(jwkSet);
     }
 
     private static KeyPair generateRsaKey() {
-        KeyPair keyPair;
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(2048);
-            keyPair = keyPairGenerator.generateKeyPair();
-        }
-        catch (Exception ex) {
+            return keyPairGenerator.generateKeyPair();
+        } catch (Exception ex) {
             throw new IllegalStateException(ex);
         }
-        return keyPair;
     }
 
     @Bean
@@ -147,7 +163,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().build();
+        return AuthorizationServerSettings.builder().issuer("http://localhost:8081").build();
     }
 
 
