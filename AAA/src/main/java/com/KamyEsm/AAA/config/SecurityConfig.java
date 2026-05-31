@@ -111,24 +111,29 @@ public class SecurityConfig {
     @Order(3)
     public SecurityFilterChain loginSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(authorize -> authorize
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/loginpage.html",
-                                "/login",          // GET و POST
+                                "/login",
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
-                                "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(AbstractHttpConfigurer::disable)   // خیلی مهم
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("http://localhost:5173/dashboard", false)
+                        .failureUrl("/login?error")
+                        .permitAll()
+                )
                 .csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
+
 
 
     @Bean

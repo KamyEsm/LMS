@@ -4,22 +4,27 @@
   <meta charset="UTF-8">
   <title>Login</title>
 
-  <!-- مسیر درست CSS در thymeleaf -->
   <link rel="stylesheet" href="/css/loginpagestyle.css">
 </head>
 
 <body>
 <div class="container">
-  <form class="login" th:action="@{/login}" method="post">
-    <h1 class="login-title">login</h1>
-    <p class="login-subtitle">Log in to your account to continue.</p>
 
-    <!-- پیام خطا از Model (گزینه B: بدون redirect) -->
-    <div class="login-message"
-         th:if="${loginError}"
-         th:text="${errorMessage}"
-         style="color:red">
-    </div>
+  <div class="login-message"
+       th:if="${param.error}"
+       style="color:red">
+    Invalid username or password.
+  </div>
+
+  <div class="login-message"
+       th:if="${param.logout}"
+       style="color:green">
+    You have been logged out successfully.
+  </div>
+
+  <form class="login" th:action="@{/login}" method="post">
+    <h1 class="login-title">Login</h1>
+    <p class="login-subtitle">Log in to your account to continue.</p>
 
     <input type="hidden"
            th:if="${_csrf != null}"
@@ -27,7 +32,7 @@
            th:value="${_csrf.token}"/>
 
     <div class="login-group">
-      <label class="login-label" for="username">username:</label>
+      <label class="login-label" for="username">Username:</label>
       <input class="login-field" id="username" type="text"
              placeholder="Enter your username."
              name="username"
@@ -36,9 +41,9 @@
     </div>
 
     <div class="login-group">
-      <label class="login-label" for="password">password</label>
+      <label class="login-label" for="password">Password:</label>
       <input class="login-field" id="password" type="password"
-             placeholder="password"
+             placeholder="Enter your password"
              name="password"
              autocomplete="current-password"/>
     </div>
@@ -49,14 +54,14 @@
         <span>Remember me.</span>
       </label>
 
-      <a href="#" class="login-link">Forgot your password?</a>
+      <a th:href="@{/forgot-password}" class="login-link">Forgot your password?</a>
     </div>
 
-    <button class="login-button" type="submit">login</button>
+    <button class="login-button" type="submit">Login</button>
 
     <div class="login-footer">
-      Dont have an account?
-      <a href="#" class="login-link"> register</a>
+      Don’t have an account?
+      <a th:href="@{/register}" class="login-link">Register</a>
     </div>
   </form>
 </div>

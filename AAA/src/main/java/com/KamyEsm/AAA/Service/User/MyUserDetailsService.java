@@ -1,6 +1,7 @@
 package com.KamyEsm.AAA.Service.User;
 
 import com.KamyEsm.AAA.Entity.MyUser;
+import com.KamyEsm.AAA.Entity.Permission;
 import com.KamyEsm.AAA.Entity.Role;
 import com.KamyEsm.AAA.Repository.UserRepository;
 import com.KamyEsm.AAA.Security.Authority;
@@ -28,6 +29,14 @@ public class MyUserDetailsService implements UserDetailsService {
             MyUser user = userOptional.get();
             Set<Role> roleSet = user.getRoles();
             Set<Authority> set = new HashSet<>();
+
+//            for (Role r : roleSet){
+//                set.add(new Authority(r.getName().startsWith("ROLE_") ? r.getName() : "ROLE_" + r.getName() , "System_Role"));
+//                for (Permission p : r.getPermissions()){
+//                    set.add(new Authority(p.getName() , p.getDescription()));
+//                }
+//            }
+
 
 
 
