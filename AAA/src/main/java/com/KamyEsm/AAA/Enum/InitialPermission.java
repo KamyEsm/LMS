@@ -20,6 +20,10 @@ public enum InitialPermission {
     DELETE_PERMISSION,
     READ_PERMISSION,
 
+    //permission management
+    ADD_PERMISSION_MANAGEMENT,
+    DELETE_PERMISSION_MANAGEMENT,
+
     //scopes
     openid,
     profile
