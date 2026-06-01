@@ -32,13 +32,13 @@ public interface RegisteredClientMapper {
 
         if (entity.getClientAuthenticationMethods() != null) {
             entity.getClientAuthenticationMethods().forEach(method ->
-                    builder.clientAuthenticationMethod(new ClientAuthenticationMethod(method))
+                    builder.clientAuthenticationMethod(mapClientAuthMethod(method))
             );
         }
 
         if (entity.getAuthorizationGrantTypes() != null) {
             entity.getAuthorizationGrantTypes().forEach(grant ->
-                    builder.authorizationGrantType(new AuthorizationGrantType(grant))
+                    builder.authorizationGrantType(mapToAuthorizationGrantType(grant))
             );
         }
 
@@ -173,7 +173,25 @@ public interface RegisteredClientMapper {
     }
 
 
+    private ClientAuthenticationMethod mapClientAuthMethod(String method) {
+        return switch (method) {
+            case "client_secret_basic" -> ClientAuthenticationMethod.CLIENT_SECRET_BASIC;
+            case "client_secret_post"  -> ClientAuthenticationMethod.CLIENT_SECRET_POST;
+            case "private_key_jwt"     -> ClientAuthenticationMethod.PRIVATE_KEY_JWT;
+            case "client_secret_jwt"   -> ClientAuthenticationMethod.CLIENT_SECRET_JWT;
+            case "none"                -> ClientAuthenticationMethod.NONE;
+            default -> new ClientAuthenticationMethod(method); // اگر خواستی custom هم پشتیبانی شود
+        };
+    }
 
+    private AuthorizationGrantType mapToAuthorizationGrantType(String authGrantType){
+        return switch (authGrantType){
+            case "authorization_code" -> AuthorizationGrantType.AUTHORIZATION_CODE;
+            case "refresh_token" -> AuthorizationGrantType.REFRESH_TOKEN;
+            case "client_credentials" -> AuthorizationGrantType.CLIENT_CREDENTIALS;
+            default -> new AuthorizationGrantType(authGrantType);
+        };
+    }
 
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

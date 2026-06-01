@@ -39,7 +39,7 @@ export async function generateCodeChallenge(verifier) {
 
 const AUTH_CONFIG = {
     clientId: "frontend-client",
-    redirectUri: "http://localhost:5173/dashboard",
+    redirectUri: "http://localhost:5173/auth/callback",
     authEndpoint: "http://localhost:8081/oauth2/authorize",
     tokenEndpoint: "http://localhost:8081/oauth2/token",
     scope: "openid",
@@ -49,6 +49,9 @@ export async function redirectToLogin() {
     const codeVerifier = generateRandomString(64);
     const codeChallenge = await generateCodeChallenge(codeVerifier);
     const state = generateRandomString(32);
+    console.log("codeVerifier:" + codeVerifier)
+    console.log("codeChallenge:" + codeChallenge)
+    console.log("state:" + state)
 
     sessionStorage.setItem("pkce_code_verifier", codeVerifier);
     sessionStorage.setItem("oauth_state", state);
@@ -69,7 +72,9 @@ export async function redirectToLogin() {
 export async function exchangeCodeForToken(code, state) {
     const savedState = sessionStorage.getItem("oauth_state");
     const codeVerifier = sessionStorage.getItem("pkce_code_verifier");
-
+    console.log("savedState: "+savedState);
+    console.log("requestState: "+state)
+    console.log("savedPKCECodeVerifier: "+codeVerifier);
     if (!code) {
         throw new Error("Authorization code not found");
     }
@@ -98,11 +103,20 @@ export async function exchangeCodeForToken(code, state) {
         body: body.toString(),
     });
 
-    const data = await response.json();
+    const text = await response.text();
+    console.log("Raw token response:", text);
+
+    let data;
+    try {
+        data = JSON.parse(text);
+    } catch {
+        throw new Error("Token endpoint did not return JSON. Probably redirected to login.");
+    }
 
     if (!response.ok) {
         throw new Error(data.error_description || data.error || "Token exchange failed");
     }
+
 
     sessionStorage.removeItem("pkce_code_verifier");
     sessionStorage.removeItem("oauth_state");

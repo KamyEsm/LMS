@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,7 @@ public class AuthController {
 
 
     @PostMapping("/register")
+    @PreAuthorize("hasAuthority('CREAT_USER')")
     public ResponseEntity<UserResponse> register(@RequestBody @Valid CreateUserRequest request){
         return ResponseEntity.ok(userMapper.toDto(registerService.register(userMapper.toEntity(request))));
     }

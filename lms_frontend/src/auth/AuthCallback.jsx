@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { exchangeCodeForToken } from "./auth";
 
@@ -6,16 +6,26 @@ function AuthCallback() {
     const navigate = useNavigate();
     const [error, setError] = useState("");
 
+    const ranRef = useRef(false);
+
     useEffect(() => {
+        if (ranRef.current) return;
+        ranRef.current = true;
+
         async function handleCallback() {
             try {
                 const params = new URLSearchParams(window.location.search);
                 const code = params.get("code");
                 const state = params.get("state");
 
+                if (!code) {
+                    throw new Error("کد authorization در callback پیدا نشد");
+                }
+
                 const tokenData = await exchangeCodeForToken(code, state);
 
                 localStorage.setItem("access_token", tokenData.access_token);
+                console.log("access token:", tokenData.access_token);
 
                 if (tokenData.refresh_token) {
                     localStorage.setItem("refresh_token", tokenData.refresh_token);
@@ -24,7 +34,7 @@ function AuthCallback() {
                 navigate("/dashboard", { replace: true });
             } catch (err) {
                 console.error(err);
-                setError(err.message || "خطا در ورود");
+                setError(err?.message || "خطا در ورود");
             }
         }
 

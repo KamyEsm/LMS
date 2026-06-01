@@ -101,7 +101,7 @@ public class Initializer implements CommandLineRunner {
                     userClient.setAuthorizationGrantTypes(new HashSet<>(Set.of("authorization_code", "refresh_token")));
                     userClient.setClientAuthenticationMethods(new HashSet<>(Set.of("none")));
 
-                    userClient.setRedirectUris(new HashSet<>(new HashSet<>(Set.of("http://localhost:5173/dashboard"))));
+                    userClient.setRedirectUris((new HashSet<>(Set.of("http://localhost:5173/auth/callback"))));
                     userClient.setPostLogoutRedirectUris(new HashSet<>(Set.of("http://localhost:5173/auth/callback")));
 
                     Set<Permission> permissionSets = new HashSet<>();
