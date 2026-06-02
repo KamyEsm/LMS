@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.server.authorization.settings.OAuth2T
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
 import java.time.Duration;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,9 @@ public interface RegisteredClientMapper {
 
         TokenSettings.Builder tokenSettingsBuilder = TokenSettings.builder()
                 .accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED)
-                .idTokenSignatureAlgorithm(SignatureAlgorithm.RS256);
+                .idTokenSignatureAlgorithm(SignatureAlgorithm.RS256)
+                .reuseRefreshTokens(entity.getReuseRefreshTokens())
+                .refreshTokenTimeToLive(Duration.ofSeconds(entity.getRefreshTokenTimeToLiveSeconds()));
 
         if (entity.getAccessTokenTimeToLiveSeconds() != null) {
             tokenSettingsBuilder.accessTokenTimeToLive(
@@ -174,7 +177,7 @@ public interface RegisteredClientMapper {
 
 
     private ClientAuthenticationMethod mapClientAuthMethod(String method) {
-        return switch (method) {
+        return switch (method.trim().toLowerCase()) {
             case "client_secret_basic" -> ClientAuthenticationMethod.CLIENT_SECRET_BASIC;
             case "client_secret_post"  -> ClientAuthenticationMethod.CLIENT_SECRET_POST;
             case "private_key_jwt"     -> ClientAuthenticationMethod.PRIVATE_KEY_JWT;
@@ -185,7 +188,7 @@ public interface RegisteredClientMapper {
     }
 
     private AuthorizationGrantType mapToAuthorizationGrantType(String authGrantType){
-        return switch (authGrantType){
+        return switch (authGrantType.trim().toLowerCase()){
             case "authorization_code" -> AuthorizationGrantType.AUTHORIZATION_CODE;
             case "refresh_token" -> AuthorizationGrantType.REFRESH_TOKEN;
             case "client_credentials" -> AuthorizationGrantType.CLIENT_CREDENTIALS;

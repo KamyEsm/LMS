@@ -42,7 +42,7 @@ const AUTH_CONFIG = {
     redirectUri: "http://localhost:5173/auth/callback",
     authEndpoint: "http://localhost:8084/oauth2/authorize",
     tokenEndpoint: "http://localhost:8084/oauth2/token",
-    scope: "openid",
+    scope: "openid profile offline_access",
 };
 
 export async function redirectToLogin() {

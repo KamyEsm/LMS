@@ -116,6 +116,7 @@ public class Initializer implements CommandLineRunner {
 
                     permissionsRepository.findByName(InitialScope.openid.name()).ifPresent(permissionSets::add);
                     permissionsRepository.findByName(InitialScope.profile.name()).ifPresent(permissionSets::add);
+                    permissionsRepository.findByName(InitialScope.offline_access.name()).ifPresent(permissionSets::add);
 
                     userClient.setScopes(permissionSets);
 
