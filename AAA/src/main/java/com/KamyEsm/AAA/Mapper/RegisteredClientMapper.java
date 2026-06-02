@@ -180,7 +180,7 @@ public interface RegisteredClientMapper {
             case "private_key_jwt"     -> ClientAuthenticationMethod.PRIVATE_KEY_JWT;
             case "client_secret_jwt"   -> ClientAuthenticationMethod.CLIENT_SECRET_JWT;
             case "none"                -> ClientAuthenticationMethod.NONE;
-            default -> new ClientAuthenticationMethod(method); // اگر خواستی custom هم پشتیبانی شود
+            default -> new ClientAuthenticationMethod(method);
         };
     }
 

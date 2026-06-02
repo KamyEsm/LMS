@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -59,6 +61,9 @@ public class Initializer implements CommandLineRunner {
             for (InitialPermission p : InitialPermission.values()){
                 permissionSet.add(new Permission(null , p.name() , new HashSet<>() , null , null));
             }
+            for (InitialScope p : InitialScope.values()){
+                permissionSet.add(new Permission(null , p.name() , new HashSet<>() , null , null));
+            }
 
             Role adminRole = new Role(null , InitialRole.ROLE_MANAGER.name() , null , new HashSet<>() , permissionSet);
             roleSet.add(adminRole);
@@ -97,10 +102,12 @@ public class Initializer implements CommandLineRunner {
                     Oauth2RegisteredClientEntity userClient = new Oauth2RegisteredClientEntity();
 
                     userClient.setClientId(userClientId);
-                    userClient.setClientName("frontend-client");
+                    userClient.setClientName("React Application");
 
-                    userClient.setAuthorizationGrantTypes(new HashSet<>(Set.of("authorization_code", "refresh_token")));
-                    userClient.setClientAuthenticationMethods(new HashSet<>(Set.of("none")));
+                    userClient.setAuthorizationGrantTypes(new HashSet<>(Set.of(
+                            AuthorizationGrantType.AUTHORIZATION_CODE.getValue(),
+                            AuthorizationGrantType.REFRESH_TOKEN.getValue())));
+                    userClient.setClientAuthenticationMethods(new HashSet<>(Set.of(ClientAuthenticationMethod.NONE.getValue())));
 
                     userClient.setRedirectUris((new HashSet<>(Set.of("http://localhost:5173/auth/callback"))));
                     userClient.setPostLogoutRedirectUris(new HashSet<>(Set.of("http://localhost:5173/auth/callback")));
