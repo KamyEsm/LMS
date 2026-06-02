@@ -24,7 +24,5 @@ public enum InitialPermission {
     ADD_PERMISSION_MANAGEMENT,
     DELETE_PERMISSION_MANAGEMENT,
 
-    //scopes
-    openid,
-    profile
+
 }

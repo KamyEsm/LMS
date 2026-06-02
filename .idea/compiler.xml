@@ -14,7 +14,7 @@
         </processorPath>
         <module name="AAA" />
       </profile>
-      <profile name="Annotation profile for LMSCore" enabled="true">
+      <profile name="Annotation profile for APIGateway" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -22,6 +22,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar" />
         </processorPath>
         <module name="LMSCore" />
+        <module name="APIGateway" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -31,6 +32,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="AAA" options="-parameters" />
+      <module name="APIGateway" options="-parameters" />
       <module name="LMS" options="-parameters" />
       <module name="LMSCore" options="-parameters" />
     </option>

@@ -28,13 +28,14 @@ function AuthCallback() {
                 console.log("access token:", tokenData.access_token);
 
                 if (tokenData.refresh_token) {
+                    console.log(tokenData.refresh_token)
                     localStorage.setItem("refresh_token", tokenData.refresh_token);
                 }
 
                 navigate("/dashboard", { replace: true });
             } catch (err) {
                 console.error(err);
-                setError(err?.message || "خطا در ورود");
+                setError(err?.message || "error to login");
             }
         }
 
@@ -47,7 +48,7 @@ function AuthCallback() {
                 {error ? (
                     <p className="login-error">{error}</p>
                 ) : (
-                    <p className="login-subtitle">در حال تکمیل ورود...</p>
+                    <p className="login-subtitle">Completing login...</p>
                 )}
             </div>
         </div>

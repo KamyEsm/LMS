@@ -6,6 +6,7 @@ import com.KamyEsm.AAA.Entity.Permission;
 import com.KamyEsm.AAA.Entity.Role;
 import com.KamyEsm.AAA.Enum.InitialPermission;
 import com.KamyEsm.AAA.Enum.InitialRole;
+import com.KamyEsm.AAA.Enum.InitialScope;
 import com.KamyEsm.AAA.Properties.FirstUserProperties;
 import com.KamyEsm.AAA.Properties.JWTProperties;
 import com.KamyEsm.AAA.Repository.Oauth2RegisteredClientRepository;
@@ -106,8 +107,8 @@ public class Initializer implements CommandLineRunner {
 
                     Set<Permission> permissionSets = new HashSet<>();
 
-                    permissionsRepository.findByName(InitialPermission.openid.name()).ifPresent(permissionSets::add);
-                    permissionsRepository.findByName(InitialPermission.profile.name()).ifPresent(permissionSets::add);
+                    permissionsRepository.findByName(InitialScope.openid.name()).ifPresent(permissionSets::add);
+                    permissionsRepository.findByName(InitialScope.profile.name()).ifPresent(permissionSets::add);
 
                     userClient.setScopes(permissionSets);
 

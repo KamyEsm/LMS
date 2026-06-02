@@ -86,7 +86,6 @@ public class SecurityConfig {
                         authorize.anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(c -> c.configurationSource(corsConfigurationSource()))
                 .exceptionHandling(exceptions -> exceptions
                         .defaultAuthenticationEntryPointFor(
                                 new LoginUrlAuthenticationEntryPoint("/login"),
@@ -110,7 +109,6 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(c -> c.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -142,8 +140,7 @@ public class SecurityConfig {
                         .failureUrl("/login?error")
                         .permitAll()
                 )
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(c -> c.configurationSource(corsConfigurationSource()));
+                .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
@@ -205,7 +202,7 @@ public class SecurityConfig {
                     String value = grantedAuthority.getAuthority();
                     if (value.startsWith("ROLE_")) {
                         roles.add(value.substring(5));
-                    } else {
+                    } else if (value.equals(value.toUpperCase())){
                         authorities.add(value);
                     }
                 });
@@ -222,21 +219,6 @@ public class SecurityConfig {
             context.getClaims().claim("authorities", authorities);
 
         };
-    }
-
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("http://localhost:5173"));
-        cfg.setAllowedMethods(List.of("GET","POST"));
-        cfg.setAllowedHeaders(List.of("Authorization","Content-Type"));
-        cfg.setExposedHeaders(List.of("Location"));
-//        cfg.setAllowCredentials(true); // اگر cookie/session لازم داری
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", cfg);
-        return source;
     }
 
 

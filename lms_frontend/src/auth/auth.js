@@ -40,8 +40,8 @@ export async function generateCodeChallenge(verifier) {
 const AUTH_CONFIG = {
     clientId: "frontend-client",
     redirectUri: "http://localhost:5173/auth/callback",
-    authEndpoint: "http://localhost:8081/oauth2/authorize",
-    tokenEndpoint: "http://localhost:8081/oauth2/token",
+    authEndpoint: "http://localhost:8084/oauth2/authorize",
+    tokenEndpoint: "http://localhost:8084/oauth2/token",
     scope: "openid",
 };
 

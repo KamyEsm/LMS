@@ -7,6 +7,7 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/AAA/pom.xml" />
         <option value="$PROJECT_DIR$/LMSCore/pom.xml" />
+        <option value="$PROJECT_DIR$/APIGateway/pom.xml" />
       </list>
     </option>
   </component>
